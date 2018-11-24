@@ -13,7 +13,7 @@
             <i class="fa fa-angle-left pull-right"></i>
           </span>
         </a>
-        <ul class="treeview-menu">
+        <ul class="treeview-menu ">
           <li class="active"><a href="{{ route('werknemers.index') }}"><i class="fa"></i>Overzicht</a></li>
           <li><a href="{{ route('werknemers.create')}}"><i class="fa"></i>Werknemer toevoegen</a></li>
           <li><a href="{{ route('werknemers.beschikbaar')}}"><i class="fa"></i>Beschikbaar</a></li>
