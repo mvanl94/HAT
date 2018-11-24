@@ -1,16 +1,62 @@
-
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
-
-// Variables
-@import "variables";
-
-// Bootstrap
-@import '~bootstrap/scss/bootstrap';
-
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+.content-header h1 {
+    display: inline-block;
 }
 
-@import "custom";
+.breadcrumb {
+    display: inline-block;
+
+}
+
+.mt {
+    margin-top: 2.5em; 
+}
+.addobject {
+  position: absolute;
+  display: inline-block;
+  margin-left: 1em;
+  margin-top: 20px;
+}
+
+.form-body {
+  padding-top: 3em;
+}
+
+.clickable tr {
+  cursor: pointer;
+}
+
+.calendar-block {
+  width: 100%;
+  margin: auto;
+  margin-top: 2em;
+}
+
+.beschikbaarheid-table {
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+
+}
+.beschikbaarheid-table td {
+    padding: 2em;
+    border-right: 1px solid white;
+    &:hover {
+        cursor: pointer;
+        opacity: 0.8;
+    }
+}
+//
+// .beschikbaarheid-table tbody tr:nth-child(n+1) > td:nth-child(n+2) {
+//     border-right: 1px solid white;
+// }
+
+
+.beschikbaarheid-status0 {
+    background-color: #eaeaea;
+}
+.beschikbaarheid-status1 {
+    background-color: #30b530;
+}
+.beschikbaarheid-status2 {
+    background-color: #ff3b3b;
+}
