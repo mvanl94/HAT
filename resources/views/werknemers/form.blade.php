@@ -33,6 +33,15 @@
         {!! Form::date('birthday', old('birthday'), array('class' => 'form-control')) !!}
     </div>
     <div class="form-group">
+        {!! Form::label('systeem', 'Systeem:') !!}
+        {!! Form::select('systeem', [
+            "Promedico" => "Promedico",
+            "Medicom" => "Medicom",
+            "Mira" => "Mira",
+            "Microhis" => "Microhis"
+        ], null, array('multiple'=>'multiple','name'=>'systeem[]')) !!}
+    </div>
+    <div class="form-group">
         {!! Form::label('telefoon', 'Telefoonnummer:') !!}
         {!! Form::text('telefoon', old('telefoon'), array('class' => 'form-control')) !!}
     </div>

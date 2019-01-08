@@ -21,11 +21,12 @@ class MakeNewEmployeesTable extends Migration
             $table->string('postcode');
             $table->string('email');
             $table->string('telefoon');
-            $table->integer('ervaring');
+            $table->float('ervaring');
             $table->integer('schaal');
+            $table->string('systeem');
             $table->integer('salarisnummer');
             $table->string('beschikbaarheid');
-            $table->string('ingepland');
+            $table->string('ingepland', 9999)
         });
     }
 

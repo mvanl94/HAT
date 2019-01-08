@@ -30436,10 +30436,14 @@ __webpack_require__(133);
                     } else {
                         status = 1;
                     }
+                    var baseUrl = '';
 
+                    if (window.location.origin.indexOf('hatwente') > 0) {
+                        baseUrl = window.location.origin + '/portaal';
+                    }
                     $.ajax({
                         type: 'POST',
-                        url: '/werknemer/inplannen',
+                        url: baseUrl + '/werknemer/inplannen',
                         data: {
                             id: id,
                             date: date,

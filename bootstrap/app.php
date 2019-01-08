@@ -40,6 +40,10 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
+//
+// $app->configure('permission');
+// $app->alias('cache', \Illuminate\Cache\CacheManager::class);  // if you don't have this already
+// $app->register(Spatie\Permission\PermissionServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

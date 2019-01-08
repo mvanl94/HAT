@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -48,36 +50,38 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        $employee = new Employee;
-        $employee->naam = $request->naam;
-        $employee->adres = $request->adres;
-        $employee->birthday = $request->birthday;
-        $employee->postcode = $request->postcode;
-        $employee->stad = $request->stad;
-        $employee->telefoon = $request->telefoon;
-        $employee->email = $request->email;
-        $employee->ervaring = $request->ervaring;
-        $employee->schaal = $request->schaal;
-        $employee->salarisnummer = $request->salarisnummer;
-        $employee->periodiek = $request->periodiek;
-        $employee->beschikbaar_tot = $request->beschikbaar_tot;
-        $employee->beschikbaar_vanaf = $request->beschikbaar_vanaf;
 
         $beschikbaarheid = collect([
-            'Monday' => ["ochtend" => (is_null($request->Monday1) ? 0 : 1),
-            "middag" => (is_null($request->Monday2)? 0 : 1)],
-            'Tuesday' => ["ochtend" => (is_null($request->Tuesday1)? 0 : 1),
-            "middag" => (is_null($request->Tuesday2)? 0 : 1)],
-            'Wednesday' => ["ochtend" => (is_null($request->Wednesday1)? 0 : 1),
-            'middag' => (is_null($request->Wednesday2)? 0 : 1)],
-            'Thursday' => ["ochtend" => (is_null($request->Thursday1)? 0 : 1),
-            'middag' => (is_null($request->Thursday2)? 0 : 1)],
-            'Friday' => ["ochtend" => (is_null($request->Friday1)? 0 : 1),
-            'middag' => (is_null($request->Friday2)? 0 : 1)]
+            'Monday' => ["ochtend" => (is_null(request('Monday1')) ? 0 : 1),
+            "middag" => (is_null(request('Monday2'))? 0 : 1)],
+            'Tuesday' => ["ochtend" => (is_null(request('Tuesday1'))? 0 : 1),
+            "middag" => (is_null(request('Tuesday2'))? 0 : 1)],
+            'Wednesday' => ["ochtend" => (is_null(request('Wednesday1'))? 0 : 1),
+            'middag' => (is_null(request('Wednesday2'))? 0 : 1)],
+            'Thursday' => ["ochtend" => (is_null(request('Thursday1'))? 0 : 1),
+            'middag' => (is_null(request('Thursday2'))? 0 : 1)],
+            'Friday' => ["ochtend" => (is_null(request('Friday1'))? 0 : 1),
+            'middag' => (is_null(request('Friday2'))? 0 : 1)]
         ]);
-        $employee->beschikbaarheid = json_encode($beschikbaarheid, true);
 
-        $employee->save();
+
+        Employee::create([
+            'naam' => request('naam'),
+            'adres' => request('adres'),
+            'birthday' => request('birthday'),
+            'postcode' => request('postcode'),
+            'stad' => request('stad'),
+            'telefoon' => request('telefoon'),
+            'email' => request('email'),
+            'ervaring' => request('ervaring'),
+            'schaal' => request('schaal'),
+            'salarisnummer' => request('salarisnummer'),
+            'periodiek' => request('periodiek'),
+            'systeem' => implode(',', request('systeem')),
+            'beschikbaar_vanaf' => request('beschikbaar_vanaf'),
+            'beschikbaar_tot' => request('beschikbaar_tot'),
+            'beschikbaarheid' => json_encode($beschikbaarheid, true)
+        ]);
 
         return redirect()->route('werknemers.index');
     }
@@ -90,8 +94,11 @@ class EmployeeController extends Controller
      */
     public function show(employee $employee)
     {
-        $module = ['name'=>'Werknemer',
-                'resourceful'=>'werknemers'];
+        $module = [
+            'name' => 'Werknemer',
+            'resourceful' => 'werknemers',
+        ];
+
         $data['module'] = $module;
         $data['item'] = $employee;
 
@@ -151,6 +158,7 @@ class EmployeeController extends Controller
         $employee->email = $request->email;
         $employee->ervaring = $request->ervaring;
         $employee->schaal = $request->schaal;
+        $employee->systeem = implode(',', $request->systeem);
         $employee->salarisnummer = $request->salarisnummer;
         $employee->periodiek = $request->periodiek;
         $employee->beschikbaar_tot = $request->beschikbaar_tot;
@@ -194,10 +202,10 @@ class EmployeeController extends Controller
     {
         try
         {
-            $employeeID = $request->get('id');
-            $date = $request->get('date');
-            $status = $request->get('status');
-            $dagdeel = $request->get('dagdeel');
+            $employeeID = request('id');
+            $date = request('date');
+            $status = request('status');
+            $dagdeel = request('dagdeel');
 
 
             $employee = Employee::where('id', $employeeID)->get()->first();
@@ -231,7 +239,7 @@ class EmployeeController extends Controller
         $monday = $startingDate;
 
         $ingepland = collect(json_decode($employee->ingepland));
-        $weeks = 10;
+        $weeks = 20;
         $week = 0;
         $b = collect();
 
@@ -248,23 +256,30 @@ class EmployeeController extends Controller
                 $d = collect();
                 $d->date = $startingDate->format('Y-m-d');
 
-                $startingDate->addDays(1);
+                if (($startingDate >= $employee->beschikbaar_vanaf)
+                    & ($startingDate <= $employee->beschikbaar_tot)) {
 
-                if ($ingepland->has($d->date)) {
-                    $d->ochtend = $ingepland->get($d->date)->{"ochtend"};
+                    if ($ingepland->has($d->date)) {
+                        $d->ochtend = $ingepland->get($d->date)->{"ochtend"};
 
-                    $d->middag = $ingepland->get($d->date)->{"middag"};
-                    if ($d->middag == "") {
+                        $d->middag = $ingepland->get($d->date)->{"middag"};
+                        if ($d->middag == "") {
+                            $d->middag = $dag->middag;
+                        }
+                        if ($d->ochtend == "") {
+                            $d->ochtend = $dag->ochtend;
+                        }
+                    } else {
+                        $d->ochtend = $dag->ochtend;
                         $d->middag = $dag->middag;
                     }
-                    if ($d->ochtend == "") {
-                        $d->ochtend = $dag->ochtend;
-                    }
                 } else {
-                    $d->ochtend = $dag->ochtend;
-                    $d->middag = $dag->middag;
+                    $d->ochtend = 0;
+                    $d->middag = 0;
                 }
+
                 $weekcol->put($d->date, $d);
+                $startingDate->addDays(1);
             }
             $b->put($weekn, $weekcol);
             $startingDate = $startingDate->addDays(2); #Van vrijdag naar maandag

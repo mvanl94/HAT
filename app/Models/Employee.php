@@ -16,7 +16,7 @@ class Employee extends Model
      * @var array
      */
     protected $fillable = [
-        'id','naam', 'adres', 'postcode', 'telefoon', 'email',
+        'id','naam', 'adres', 'birthday', 'stad', 'periodiek', 'systeem', 'postcode', 'telefoon', 'email',
         'ervaring', 'schaal', 'salarisnummer', 'beschikbaar_vanaf', 'beschikbaar_tot',
         'beschikbaarheid', 'indeling'
     ];
@@ -35,19 +35,41 @@ class Employee extends Model
         $day = new \DateTime($date);
         $day = $day->format('l');
 
-        if ($availability[$day]->$dagdeel== '1') {
 
-            $ingepland = collect(json_decode($this->ingepland));
+        if ($dagdeel == 'Hele dag') {
 
-            if ($ingepland->has($date)) {
-                $status = $ingepland->get($date)->$dagdeel;
-                if ($status == '1' | $status == '') {
+            if (($availability[$day]->middag== '1') &
+                ($availability[$day]->ochtend == '1')) {
+
+                    $ingepland = collect(json_decode($this->ingepland));
+
+                    if ($ingepland->has($date)) {
+                        $middag = $ingepland->get($date)->middag;
+                        $ochtend = $ingepland->get($date)->ochtend;
+
+                        if ($middag == '1' & $ochtend == '1') {
+                            return true;
+                        }
+                        return false;
+                    }
                     return true;
                 }
-                return false;
+        } else {
+            if ($availability[$day]->$dagdeel== '1') {
+
+                $ingepland = collect(json_decode($this->ingepland));
+
+                if ($ingepland->has($date)) {
+                    $status = $ingepland->get($date)->$dagdeel;
+                    if ($status == '1' | $status == '') {
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
             }
-            return true;
         }
+
 
         return false;
     }

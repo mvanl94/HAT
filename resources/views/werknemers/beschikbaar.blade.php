@@ -27,6 +27,7 @@
                             <select class="form-control" name="dagdeel">
                                 <option name="ochtend">ochtend</option>
                                 <option name="middag">middag</option>
+                                <option name="dag">Hele dag</option>
                             </select>
                         </div></li>
                         <li class="list-group-item"><div class="form-group">

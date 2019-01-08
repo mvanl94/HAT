@@ -35,7 +35,7 @@
               <li class="list-group-item text-right"><span class="pull-left"><strong>Schaal</strong></span> {{ $item->schaal }}</li>
               <li class="list-group-item text-right"><span class="pull-left"><strong>Salarisnummer</strong></span> {{ $item->salarisnummer }}</li>
               <li class="list-group-item text-right"><span class="pull-left"><strong>Periodiek</strong></span> {{ $item->periodiek }}</li>
-
+              <li class="list-group-item text-right"><span class="pull-left"><strong>Systeem</strong></span> {{ str_replace(",", ", ", $item->systeem) }}</li>
             </ul>
         </div>
         <div class="col-md-4">
